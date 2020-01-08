@@ -30,6 +30,21 @@ class MemoQWebServiceBase(ABC):
             self.base_url = "http://localhost:8080"
         self.__client = Client(wsdl=self.service_url)
 
+    def __dir__(self) -> list:
+        """
+        Method for getting a list of attributes associated with the object.
+
+        Since we override __getattr__ to forward attribute lookups to the underlying client, we also override this
+        method so we can include the list of attributes of the underlying client.
+
+        :returns: List of attributes, as a list of strings.
+        """
+        return sorted(set(
+            super().__dir__() +
+            self.__dict__.keys() +
+            self.__client.__dir__()
+        ))
+
     def __getattr__(self, item):
         """
         Method for forwarding attribute lookups to the underlying client.
@@ -44,7 +59,7 @@ class MemoQWebServiceBase(ABC):
         """
         Method for getting the service URL associated with the object.
 
-        :return: The service URL associated with the object, as a string.
+        :returns: The service URL associated with the object, as a string.
         """
         raise NotImplementedError
 
@@ -71,7 +86,7 @@ class MemoQServerProjectService(MemoQWebServiceBase):
         """
         Method for getting the service URL associated with the Server project management endpoint.
 
-        :return: The service URL associated with the Server project management endpoint, as a string.
+        :returns: The service URL associated with the Server project management endpoint, as a string.
         """
         return urljoin(self.base_url, '/memoqservices/serverproject?wsdl')
 
@@ -98,7 +113,7 @@ class MemoQTBService(MemoQWebServiceBase):
         """
         Method for getting the service URL associated with the Term base management endpoint.
 
-        :return: The service URL associated with the Term base management endpoint, as a string.
+        :returns: The service URL associated with the Term base management endpoint, as a string.
         """
         return urljoin(self.base_url, '/memoqservices/tb?wsdl')
 
@@ -125,6 +140,6 @@ class MemoQTMService(MemoQWebServiceBase):
         """
         Method for getting the service URL associated with the Translation Memory management endpoint.
 
-        :return: The service URL associated with the Translation Memory management endpoint, as a string.
+        :returns: The service URL associated with the Translation Memory management endpoint, as a string.
         """
         return urljoin(self.base_url, '/memoqservices/tm?wsdl')
