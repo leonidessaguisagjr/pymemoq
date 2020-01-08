@@ -36,7 +36,7 @@ class MemoQWebServiceBase(ABC):
 
         :param item: Item attribute to lookup.
         """
-        return getattr(self.__client, item)
+        return getattr(self.__client.service, item)
 
     @property
     @abstractmethod
@@ -69,8 +69,62 @@ class MemoQServerProjectService(MemoQWebServiceBase):
     @property
     def service_url(self) -> str:
         """
-        Method for getting the service URL associated with the Server project endpoint.
+        Method for getting the service URL associated with the Server project management endpoint.
 
-        :return: The service URL associated with the Server project endpoint, as a string.
+        :return: The service URL associated with the Server project management endpoint, as a string.
         """
-        return urljoin(self.base_url, '/memoqservices/serverproject')
+        return urljoin(self.base_url, '/memoqservices/serverproject?wsdl')
+
+
+class MemoQTBService(MemoQWebServiceBase):
+    """
+    Class for the Term base API.
+
+    The latest version of the API documentation for the Term base API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tbservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the Term base management endpoint.
+
+        :return: The service URL associated with the Term base management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/tb?wsdl')
+
+
+class MemoQTMService(MemoQWebServiceBase):
+    """
+    Class for the Translation Memory API.
+
+    The latest version of the API documentation for the Translation Memory API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tmservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the Translation Memory management endpoint.
+
+        :return: The service URL associated with the Translation Memory management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/tm?wsdl')

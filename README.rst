@@ -20,6 +20,28 @@ This module is dependent on the following additional packages:
 - `zeep <https://pypi.org/project/zeep/>`_
 
 
+Available classes
+-----------------
+
+The following classes are currently available:
+
+Under ``memoq.webservice``:
+
+ - ``MemoQServerProjectService`` - Server projects
+ - ``MemoQTBService`` - Term base management
+ - ``MemoQTMService`` - Translation memory management
+
+
+Example API Usage
+-----------------
+
+    >>> from memoq.webservice import MemoQServerProjectService
+    >>> project_service = MemoQServerProjectService('http://localhost:8080')
+    >>> project_service.GetApiVersion()
+    '9.2.5'
+    >>>
+
+
 License
 -------
 
