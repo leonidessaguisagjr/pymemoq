@@ -10,7 +10,7 @@ This code is released under the MIT License.
 from abc import ABC, abstractmethod
 from urllib.parse import urljoin
 
-from zeep import Client
+from zeep import CachingClient  # https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files
 
 
 class MemoQWebServiceBase(ABC):
@@ -28,7 +28,7 @@ class MemoQWebServiceBase(ABC):
             self.base_url = base_url
         else:
             self.base_url = "http://localhost:8080"
-        self.__client = Client(wsdl=self.service_url)
+        self.__client = CachingClient(wsdl=self.service_url)
 
     def __dir__(self) -> list:
         """

@@ -43,6 +43,15 @@ Example API Usage
     >>>
 
 
+Implementation Notes
+--------------------
+
+Per the recommendation to `enable caching of WSDL and XSD files
+<https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files>`_, we are using an instance of
+the ``zeep.CachingClient()`` under the hood.  Since the memoQ WSDL and XSD files should not be changing except when
+the server is upgraded, this should improve performance without causing any issues.
+
+
 License
 -------
 
