@@ -41,8 +41,8 @@ class MemoQWebServiceBase(ABC):
         """
         return sorted(set(
             super().__dir__() +
-            self.__dict__.keys() +
-            self.__client.__dir__()
+            list(self.__dict__.keys()) +
+            self.__client.service.__dir__()
         ))
 
     def __getattr__(self, item):
@@ -62,6 +62,33 @@ class MemoQWebServiceBase(ABC):
         :returns: The service URL associated with the object, as a string.
         """
         raise NotImplementedError
+
+
+class MemoQFileManagerService(MemoQWebServiceBase):
+    """
+    Class for the File Manager service API.
+
+    The latest version of the API documentation for the File Manager service API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/filemanagerservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the File Manager service endpoint.
+
+        :returns: The service URL associated with the File Manager service endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/filemanager?wsdl')
 
 
 class MemoQServerProjectService(MemoQWebServiceBase):

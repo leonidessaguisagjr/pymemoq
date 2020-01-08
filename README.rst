@@ -1,7 +1,7 @@
 ``pymemoq``
 ===========
 
-Python module to facilitate accessing the memoQ Web Service API.
+Python module to facilitate accessing the `memoQ API <https://www.memoq.com/integrations/apis>`_.
 
 
 Installation
@@ -23,10 +23,11 @@ This module is dependent on the following additional packages:
 Available classes
 -----------------
 
-The following classes are currently available:
+The following classes are currently available (eventual goal is to provide wrappers for all of the APIs):
 
 Under ``memoq.webservice``:
 
+ - ``MemoQFileManagerService`` - File upload/download API
  - ``MemoQServerProjectService`` - Server projects
  - ``MemoQTBService`` - Term base management
  - ``MemoQTMService`` - Translation memory management
