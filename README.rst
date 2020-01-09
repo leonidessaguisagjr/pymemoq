@@ -27,10 +27,15 @@ The following classes are currently available (eventual goal is to provide wrapp
 
 Under ``memoq.webservice``:
 
+ - ``MemoQAsynchronousTasksService`` - Asynchronous Tasks management API
+ - ``MemoQELMService`` - License (ELM) management API
  - ``MemoQFileManagerService`` - File upload/download API
- - ``MemoQServerProjectService`` - Server projects
- - ``MemoQTBService`` - Term base management
- - ``MemoQTMService`` - Translation memory management
+ - ``MemoQLightResourceService`` - Light resource management API
+ - ``MemoQLiveDocsService`` - LiveDocs management API
+ - ``MemoQSecurityService`` - Security API
+ - ``MemoQServerProjectService`` - Server projects API
+ - ``MemoQTBService`` - Term base management API
+ - ``MemoQTMService`` - Translation memory management API
 
 
 Example API Usage
@@ -50,6 +55,12 @@ Per the recommendation to `enable caching of WSDL and XSD files
 <https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files>`_, we are using an instance of
 the ``zeep.CachingClient()`` under the hood.  Since the memoQ WSDL and XSD files should not be changing except when
 the server is upgraded, this should improve performance without causing any issues.
+
+
+References
+----------
+ - `memoQ Server Resources API documentation <https://docs.memoq.com/current/api-docs/resapi/APIHelp.html>`_
+ - `memoQ server Web Service API documentation <https://docs.memoq.com/current/api-docs/wsapi/>`_
 
 
 License

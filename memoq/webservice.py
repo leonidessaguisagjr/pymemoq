@@ -1,7 +1,8 @@
 """
 Module for wrapping around the memoQ server Web Service API
 
-The latest version of the API documentation can be found here:
+This library is being developed against v9.2.5 of the memoQ API documentation.  The latest version of the API
+documentation can be found here:
 
 https://docs.memoq.com/current/api-docs/wsapi/
 
@@ -11,6 +12,9 @@ from abc import ABC, abstractmethod
 from urllib.parse import urljoin
 
 from zeep import CachingClient  # https://python-zeep.readthedocs.io/en/master/client.html#caching-of-wsdl-and-xsd-files
+
+
+DEFAULT_BASE_URL = 'http://localhost:8080'
 
 
 class MemoQWebServiceBase(ABC):
@@ -24,10 +28,7 @@ class MemoQWebServiceBase(ABC):
 
         :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
         """
-        if base_url is not None:
-            self.base_url = base_url
-        else:
-            self.base_url = "http://localhost:8080"
+        self.base_url = base_url if base_url is not None else DEFAULT_BASE_URL
         self.__client = CachingClient(wsdl=self.service_url)
 
     def __dir__(self) -> list:
@@ -47,7 +48,7 @@ class MemoQWebServiceBase(ABC):
 
     def __getattr__(self, item):
         """
-        Method for forwarding attribute lookups to the underlying client.
+        Method for forwarding attribute lookups to the underlying client service.
 
         :param item: Item attribute to lookup.
         """
@@ -62,6 +63,60 @@ class MemoQWebServiceBase(ABC):
         :returns: The service URL associated with the object, as a string.
         """
         raise NotImplementedError
+
+
+class MemoQAsynchronousTasksService(MemoQWebServiceBase):
+    """
+    Class for the Asynchronous Tasks management API.
+
+    The latest version of the API documentation for the Asynchronous Tasks management API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/tasksservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the Asynchronous Tasks management endpoint.
+
+        :returns: The service URL associated with the Asynchronous Tasks management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/tasks?wsdl')
+
+
+class MemoQELMService(MemoQWebServiceBase):
+    """
+    Class for the License (ELM) management API.
+
+    The latest version of the API documentation for the License (ELM) management API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/elmservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the License (ELM) management endpoint.
+
+        :returns: The service URL associated with the License (ELM) management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/elm?wsdl')
 
 
 class MemoQFileManagerService(MemoQWebServiceBase):
@@ -89,6 +144,87 @@ class MemoQFileManagerService(MemoQWebServiceBase):
         :returns: The service URL associated with the File Manager service endpoint, as a string.
         """
         return urljoin(self.base_url, '/memoqservices/filemanager?wsdl')
+
+
+class MemoQLightResourceService(MemoQWebServiceBase):
+    """
+    Class for the Light resource management API.
+
+    The latest version of the API documentation for the Light resource management API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/lightresourceservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the Light resource management endpoint.
+
+        :returns: The service URL associated with the Light resource management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/resource?wsdl')
+
+
+class MemoQLiveDocsService(MemoQWebServiceBase):
+    """
+    Class for the LiveDocs management API.
+
+    The latest version of the API documentation for the LiveDocs management API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/livedocsservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the LiveDocs management endpoint.
+
+        :returns: The service URL associated with the LiveDocs management endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/livedocs?wsdl')
+
+
+class MemoQSecurityService(MemoQWebServiceBase):
+    """
+    Class for the Security service API.
+
+    The latest version of the API documentation for the Security service API can be found here:
+
+    https://docs.memoq.com/current/api-docs/wsapi/memoqservices/securityservice.html
+    """
+
+    def __init__(self, base_url: str = None):
+        """
+        Initializer for the class.
+
+        :param base_url: Base URL of the memoQ Web Service API, as a string.  For example: "http://localhost:8080"
+        """
+        super().__init__(base_url)
+
+    @property
+    def service_url(self) -> str:
+        """
+        Method for getting the service URL associated with the Security service endpoint.
+
+        :returns: The service URL associated with the Security service endpoint, as a string.
+        """
+        return urljoin(self.base_url, '/memoqservices/security?wsdl')
 
 
 class MemoQServerProjectService(MemoQWebServiceBase):
