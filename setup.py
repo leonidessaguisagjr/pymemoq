@@ -9,8 +9,8 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='pymemoq',
-      version='0.1.dev9',
-      description='Python module for wrapping around the memoQ Web Service API.',
+      version='0.2.dev2',
+      description='Python module to facilitate accessing the memoQ API.',
       long_description=long_description,
       long_description_content_type='text/x-rst',
       classifiers=[

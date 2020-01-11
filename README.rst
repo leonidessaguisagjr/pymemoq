@@ -25,6 +25,10 @@ Available classes
 
 The following classes are currently available (eventual goal is to provide wrappers for all of the APIs):
 
+Under ``memoq.server``:
+
+ - ``MemoQServer`` - Wraps around a memoQ server and exposes a limited subset of the API
+
 Under ``memoq.webservice``:
 
  - ``MemoQAsynchronousTasksService`` - Asynchronous Tasks management API
@@ -40,13 +44,20 @@ Under ``memoq.webservice``:
 
 Example API Usage
 -----------------
-
+    >>> from memoq import MemoQServer
+    >>> memoq_server = MemoQServer('http://localhost:8080')
+    >>> memoq_server.api_version
+    '9.2.5'
     >>> from memoq.webservice import MemoQServerProjectService
     >>> project_service = MemoQServerProjectService('http://localhost:8080')
     >>> project_service.GetApiVersion()
     '9.2.5'
+    >>> from memoq.util import response_object_to_dict
+    >>> projects = [response_object_to_dict(project) for project in memoq_server.projects]
+    >>> from collections import Counter
+    >>> Counter([proj['DocumentStatus'] for proj in projects])
+    Counter({'TranslationInProgress': 12, 'TranslationFinished': 34, 'ProofreadingFinished': 56})
     >>>
-
 
 Implementation Notes
 --------------------
