@@ -3,8 +3,64 @@ Module for wrapping around a memoQ server.
 
 This code is released under the MIT License.
 """
-from .webservice import MemoQLiveDocsService, MemoQTBService, MemoQTMService, MemoQSecurityService, \
-    MemoQServerProjectService
+from collections.abc import Mapping
+
+from .webservice import MemoQLightResourceService, MemoQLiveDocsService, MemoQTBService, MemoQTMService, \
+    MemoQSecurityService, MemoQServerProjectService
+
+
+class LightResources(Mapping):
+    """Class that represents a mapping of memoQ light resources."""
+
+    def __init__(self, light_resource_service: MemoQLightResourceService):
+        """
+        Initializer for the class.
+
+        :param light_resource_service: The instance of MemoQLightResourceService to wrap around.
+        """
+        self._light_resource_service = light_resource_service
+        # https://docs.memoq.com/current/api-docs/wsapi/api/lightresourceservice/MemoQServices.ResourceType.html
+        self._resource_types = (
+            "AutoCorrect", "AutoTrans",
+            "FilterConfigs", "FontSubstitution",
+            "IgnoreLists",
+            "KeyboardShortcuts", "KeyboardShortcuts2",
+            "LiveDocsSettings", "LQA",
+            "MTSettings",
+            "NonTrans",
+            "PathRules",
+            "ProjectTemplate",
+            "QASettings",
+            "SegRules",
+            "Stopwords",
+            "TMSettings",
+            "WebSearchSettings"
+        )
+
+    def __getitem__(self, item: str) -> list:
+        """
+        Method for retrieving a light resource.  This essentially wraps around the IResourceService.ListResources()
+        method of the memoQ Light resources API.
+
+        For a list of valid Light Resource types to request, see the documentation for MemoQServices.ResourceType:
+
+        https://docs.memoq.com/current/api-docs/wsapi/api/lightresourceservice/MemoQServices.ResourceType.html
+
+        :param item: Light Resource to retrieve, as a str e.g. "ProjectTemplate"
+        :returns: A list of Light Resources of the requested type.
+        """
+        if item in self._resource_types:
+            return self._light_resource_service.ListResources(item)
+        else:
+            raise KeyError(
+                f"Unrecognized light resource type.  Valid resource types are: {', '.join(self._resource_types)}")
+
+    def __iter__(self):
+        for item in self._resource_types:
+            yield item, self[item]
+
+    def __len__(self):
+        return len(self._resource_types)
 
 
 class MemoQServer(object):
@@ -18,6 +74,7 @@ class MemoQServer(object):
         """
         self.base_url = base_url
         self._api_endpoints = {}
+        self._light_resources = None
 
     def __repr__(self) -> str:
         """
@@ -34,6 +91,15 @@ class MemoQServer(object):
         :returns: A user readable str for the memoQ server.
         """
         return f"memoQ server v{self.api_version} @ {self.base_url}"
+
+    @property
+    def _light_resource_service(self):
+        light_resource_service_key = "_light_resource_service"
+        try:
+            return self._api_endpoints[light_resource_service_key]
+        except KeyError:
+            self._api_endpoints[light_resource_service_key] = MemoQLightResourceService(self.base_url)
+            return self._api_endpoints[light_resource_service_key]
 
     @property
     def _live_docs_service(self):
@@ -106,6 +172,17 @@ class MemoQServer(object):
         :returns: A list of memoQ server groups.
         """
         return self._security_service.ListGroups()
+
+    @property
+    def light_resources(self) -> LightResources:
+        """
+        Method for retrieving the list of light resources from the memoQ server.
+
+        :returns: A LightResources instance, suitable for running dict style lookups.
+        """
+        if self._light_resources is None:
+            self._light_resources = LightResources(self._light_resource_service)
+        return self._light_resources
 
     @property
     def projects(self) -> list:

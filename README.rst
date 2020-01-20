@@ -56,7 +56,7 @@ Example API Usage
     >>> projects = [response_object_to_dict(project) for project in memoq_server.projects]
     >>> from collections import Counter
     >>> Counter([proj['DocumentStatus'] for proj in projects])
-    Counter({'TranslationInProgress': 12, 'TranslationFinished': 34, 'ProofreadingFinished': 56})
+    Counter({'TranslationInProgress': 65, 'TranslationFinished': 43, 'ProofreadingFinished': 21})
     >>>
 
 Implementation Notes
