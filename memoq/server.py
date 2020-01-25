@@ -4,6 +4,7 @@ Module for wrapping around a memoQ server.
 This code is released under the MIT License.
 """
 from collections.abc import Mapping
+from datetime import datetime, timezone
 
 from .webservice import MemoQLightResourceService, MemoQLiveDocsService, MemoQTBService, MemoQTMService, \
     MemoQSecurityService, MemoQServerProjectService
@@ -73,6 +74,7 @@ class MemoQServer(object):
         :param base_url: Base URL for the memoQ server.  For example, 'http://localhost:8080'
         """
         self.base_url = base_url
+        self._all_projects = None
         self._api_endpoints = {}
         self._light_resources = None
 
@@ -147,6 +149,30 @@ class MemoQServer(object):
             return self._api_endpoints[tm_service_key]
 
     @property
+    def active_projects(self) -> list:
+        """
+        Method for retrieving the list of active projects on the memoQ server.
+
+        :returns: A list of active projects on the memoQ server.
+        """
+        return [proj
+                for proj in self.all_projects
+                if proj.TimeClosed.replace(tzinfo=timezone.utc) > datetime.now(timezone.utc)]
+
+    @property
+    def all_projects(self) -> list:
+        """
+        Method for retrieving the list of all projects (both active and closed) on the memoQ server.
+
+        :returns: A list of all projects (both active and closed) on the memoQ server.
+        """
+        # https://docs.memoq.com/current/api-docs/wsapi/api/serverprojectservice/MemoQServices.ServerProjectListFilter.html#MemoQServices_SP_ServerProjectListFilter_TimeClosed
+        if self._all_projects is None:
+            self._all_projects = self._server_project_service.ListProjects(
+                {'TimeClosed': datetime(year=1900, month=1, day=1)})
+        return self._all_projects
+
+    @property
     def api_version(self) -> str:
         """
         Method for retrieving the API version.  The API version is the version of the memoQ server.
@@ -154,6 +180,17 @@ class MemoQServer(object):
         :returns: The API version, as a string.
         """
         return self._server_project_service.GetApiVersion()
+
+    @property
+    def closed_projects(self) -> list:
+        """
+        Method for retrieving the list of closed projects on the memoQ server.
+
+        :returns: A list of closed projects on the memoQ server.
+        """
+        return [proj
+                for proj in self.all_projects
+                if proj.TimeClosed.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc)]
 
     @property
     def corpora(self) -> list:
@@ -183,15 +220,6 @@ class MemoQServer(object):
         if self._light_resources is None:
             self._light_resources = LightResources(self._light_resource_service)
         return self._light_resources
-
-    @property
-    def projects(self) -> list:
-        """
-        Method for retrieving the list of projects on the memoQ server.
-
-        :returns: A list of projects on the memoQ server.
-        """
-        return self._server_project_service.ListProjects()
 
     @property
     def tbs(self) -> list:
